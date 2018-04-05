@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Go Top</title>
+  <style>
+    .wrapper {
+      width: 60%;
+      height: 500vh;
+      margin: 0 auto;
+      background: linear-gradient(to bottom right, red, green)
+    }
+
+    .btn {
+      display: none;
+      position: fixed;
+      left: 50%;
+      bottom: 150px;
+      margin-left: 40%;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 22px;
+      text-align: center;
+      background: #f3f3f3;
+      border: 1px solid #666;
+      color: #222;
+      border-radius: 5px;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn:hover {
+      border-color: dodgerblue;
+      color: #fff;
+      background: dodgerblue;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper"></div>
+  <a href="javascript:;" title="回到顶部" id="btn" class="btn">Go</a>
+
+  <script>
+    window.onload = function () {
+      // 获取页面可视区域高度
+      var clientHeight = document.documentElement.clientHeight;
+      var obtn = document.getElementById('btn');
+      var timer = null;
+      var isScrolling = false;
+      var isCancel = false;
+
+      window.onscroll = function () {
+        var top = document.documentElement.scrollTop || document.body.scrollTop;
+        if (top >= clientHeight) {
+          obtn.style.display = 'block';
+        } else {
+          obtn.style.display = 'none';
+        }
+
+        // 用户主动滚动则取消回到顶部效果
+        if (isCancel && isScrolling) {
+          isScrolling = false;
+          clearInterval(timer);
+        }
+        isCancel = true;
+      }
+
+      obtn.onclick = function () {
+        // 回顶过程中不允许再次点击
+        if (isScrolling) return;
+
+        isScrolling = true;
+        timer = setInterval(function () {
+          // 避免触发onscroll 事件里的取消回顶部判断
+          isCancel = false;
+          
+          var top = document.documentElement.scrollTop || document.body.scrollTop;
+          // 使用负数使得top 小于5后 speed 最小值为-1而非0, 避免 top 减不到0
+          var speed = Math.floor(-top / 5);
+          top += speed;
+          document.documentElement.scrollTop = document.body.scrollTop = top;
+          // console.log(top)
+          if (top === 0) {
+            isScrolling = false;
+            clearInterval(timer);
+          }
+        }, 30);
+
+      }
+    }
+  </script>
+</body>
+
+</html>
